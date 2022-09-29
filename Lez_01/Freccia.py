@@ -1,0 +1,11 @@
+print ("    *    ")
+print ("   * *   ")
+print ("  *   *  ")
+print (" *     * ")
+print ("***   ***")
+print ("  *   *  ")
+print ("  *   *  ")
+print ("  *   *  ")
+print ("  *****  ", end="")
+print ("Fatto io")
+
