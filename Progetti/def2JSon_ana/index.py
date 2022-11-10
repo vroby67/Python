@@ -1,6 +1,7 @@
-from genericpath import isfile
+from genericpath import isdir, isfile
 from functions import *
 import os
+import pathlib
 
 benchList = []
 
@@ -13,6 +14,7 @@ if len(tmp) > 0:
     pathSrc=tmp
   else: 
     print("File non trovato, mantengo il default")
+    
 
 print( "Percorso destinazione: \n", pathDest)
 tmp = input()
@@ -23,14 +25,13 @@ if len(tmp) > 0:
     print("Cartella non trovata, mantengo il default")
 '''
 
-# Estrazione dati e separazione in files sezione
-splitAndSave(pathSrc, pathDest)
+if not os.path.isdir(pathDest):
+  pathlib.Path(''.join(pathDest.rpartition("\\")[0:2])).mkdir(parents=True, exist_ok=True)
 
-filesIn = os.listdir(pathDest)
-filesIn.pop(filesIn.index("trash.txt"))
-filesIn.pop(filesIn.index("output"))
-for file in filesIn:
-  benchList.append([file, getElements(pathDest + file)])
+# Estrazione dati e separazione in files sezione
+benchList = getElements(pathSrc)
+
+
   
 componiJson(benchList)
 #testData(benchList)

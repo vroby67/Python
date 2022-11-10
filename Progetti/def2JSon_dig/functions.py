@@ -2,14 +2,14 @@
 from asyncore import write
 from curses.ascii import isblank
 
-pathSrc = "C:\\Documenti\\Git\\v0449-shared\\v0449-shared\\CL\def.cs"
+pathSrc = "C:\\Documenti\\temPython\\input\\def.cs"
 pathDest = "C:\\Documenti\\temPython\\"
 
 # estrazione dal DEF di tutte le sezioni paundiffate con estrazione del nome banco
 ##################################################################################
 def splitAndSave(pathSrc, pathDest):
   fIn = open(pathSrc, "r")
-  fOut = open(pathDest + "trash.txt", "w")
+  fOut = open(pathDest + "trash", "w")
 
   # scansiono tutto il file
   for fLine in fIn:
@@ -30,8 +30,6 @@ def splitAndSave(pathSrc, pathDest):
       
       # apro il file in scrittura
       fOut = open(pathDest + sectionName + ".txt", "w")
-      # aggiungo la linea col #if dal sorgente
-      print (fLine[fLine.index(" "):])
     
     # aggiungo tutte le linee della sezione
     fOut.write(fLine)
@@ -82,7 +80,7 @@ def getElements(filena):
         appList, wailf = ricavoOggetto(line, appList, wailf, waid)
         
         if wailf == "finito":
-          enumList.append([wDef + "enum", appList])
+          enumList = [wDef + "enum", appList]
           appList = []
           waid = "cercoDescr"
         
@@ -99,7 +97,7 @@ def getElements(filena):
         appList, wailf = ricavoOggetto(line, appList, wailf, waid)
         
         if wailf == "finito":
-          descrList.append([wDef + "descr", appList])
+          descrList = [wDef + "descr", appList]
           appList = []
           waid = "cercoNick"
         pass
@@ -117,7 +115,7 @@ def getElements(filena):
         appList, wailf = ricavoOggetto(line, appList, wailf, waid)
         
         if wailf == "finito":
-          nickList.append([wDef + "nick", appList])
+          nickList = [wDef + "nick", appList]
           appList = []
           waid = "cercoPlc"
         pass
@@ -135,7 +133,7 @@ def getElements(filena):
         appList, wailf = ricavoOggetto(line, appList, wailf, waid)
         
         if wailf == "finito":
-          plcList.append([wDef + "plc", appList])
+          plcList = [wDef + "plc", appList]
           appList = []
           waid = "cercoComp"
         pass  
@@ -153,8 +151,13 @@ def getElements(filena):
         appList, wailf = ricavoOggetto(line, appList, wailf, waid)
         
         if wailf == "finito":
-          compList.append([wDef + "comp", appList])
-          wordList.append([wDef, [enumList, descrList, nickList, plcList, compList]])
+          compList = [wDef + "comp", appList]
+          '''if len(wordList):
+            wordList.append([wDef, [enumList, descrList, nickList, plcList, compList]])
+          else:
+            wordList = [wDef, [enumList, descrList, nickList, plcList, compList]]
+          '''
+          wordList += [[wDef, [enumList, descrList, nickList, plcList, compList]]]
           waid = "altraWord"
         pass  
 
@@ -201,7 +204,6 @@ def ricavoOggetto(line, partList, wailf, waid):
 
 # Composizione file definizione oggetti
 #######################################
-
 def testData(benchList):
   fOut = open(pathDest + "output\\tempList.txt", "w")
   
@@ -225,16 +227,10 @@ def testData(benchList):
           for field in sezione[1]:
             fOut.write("\t\t\t - liv 4 - " + field + "\n")
 
-    #{
-    # "Di0":{
-    #   "RegIdx": 0,
-    #   "Name" : "Di0",
-    #   "Description" : "Prima word ingressi",
-    #   "type": "BitInt",
-    #   "Unit": "n",
-    #   "Fields":{
 
-  
+# Riassemblo le chiavi estratte ed ordinate nel json di configurazione
+# Viene creato il modello di configurazione per ciascun impianto
+######################################################################
 def componiJson(benchList):
   
   # livello 0: banchi (387, 449a, 449b...)
@@ -269,10 +265,10 @@ def componiJson(benchList):
       for row in range (0, 16):
         fOut.write('\t\t\t') 
         #for col in range (1, 3):
-        fOut.write('"' + word[1][0][0][1][row] + '" : {')
+        fOut.write('"' + word[1][0][1][row] + '" : {')
         fOut.write('"Idx" : ' + str(row) + ', ')
-        fOut.write('"Descr" : "' + word[1][1][0][1][row] + '", ')
-        fOut.write('"Nick" : "' + word[1][2][0][1][row] + '"}')
+        fOut.write('"Descr" : "' + word[1][1][1][row] + '", ')
+        fOut.write('"Nick" : "' + word[1][2][1][row] + '"}')
         if row < 15:
           fOut.write(',')
         fOut.write('\n')
@@ -280,10 +276,4 @@ def componiJson(benchList):
 
       fOut.write('\t\t}\n\t}')
     fOut.write('\n}\n')
-  
-      
-        
-          
-
-
-  
+  pass
