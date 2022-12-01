@@ -47,7 +47,7 @@ while play:
   
   if giocatore in t:
     plCh = t.index(giocatore)
-    if plCh > 2:
+    if plCh > 3:
       break
     win = res[plCh][computer]
     xpl = resTl[plCh][computer]
